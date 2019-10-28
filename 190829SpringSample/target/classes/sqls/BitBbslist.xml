@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 매퍼 부분은 복사해서 사용할 수 있도록 한다. -->
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="bbslist">
+<!-- 전체 리스트 불러오기 -->
+<select id="allbbslist" parameterType="bit.com.a.model.BbsParam" resultType="bit.com.a.model.BbslistDto">
+	SELECT SEQ, ID, REF, STEP, DEPTH, TITLE, CONTENT, WDATE, PARENT, DEL, READCOUNT
+	FROM (SELECT ROW_NUMBER()OVER(ORDER BY REF DESC, STEP ASC)AS RNUM,
+	      SEQ, ID, REF, STEP, DEPTH, TITLE, CONTENT, WDATE, PARENT, DEL, READCOUNT
+	      FROM BBS
+	      WHERE 1=1
+	      <if test="s_category != null and s_category != ''
+	      and s_keyword != null and s_keyword != ''">
+	      	<if test="s_category == 'title'">
+	      		AND TITLE LIKE '%'||#{s_keyword}||'%'
+	      	</if>
+	      	<if test="s_category == 'contents'">
+	      		AND CONTENT LIKE '%'||#{s_keyword}||'%'
+	      	</if>
+	      	<if test="s_category == 'writer'">
+	      		AND ID LIKE '%'||#{s_keyword}||'%'
+	      	</if>
+	      </if>
+	      ) A 
+	WHERE RNUM BETWEEN ${start} AND ${end}
+</select>
+
+<select id="getBbsCount" parameterType="bit.com.a.model.BbsParam" 
+	resultType="java.lang.Integer">
+	<!-- NULL이 나올 경우를 막음 -->
+	SELECT NVL(COUNT(*), 0) AS CNT
+	FROM BBS
+	WHERE 1=1
+	<if test="s_category != null and s_category != ''
+      and s_keyword != null and s_keyword != ''">
+      	<if test="s_category == 'title'">
+      		AND TITLE LIKE '%'||#{s_keyword}||'%'
+      	</if>
+      	<if test="s_category == 'contents'">
+      		AND CONTENT LIKE '%'||#{s_keyword}||'%'
+      	</if>
+      	<if test="s_category == 'writer'">
+      		AND ID LIKE '%'||#{s_keyword}||'%'
+      	</if>
+     </if>
+</select>
+
+<insert id="BbsWrite" parameterType="bit.com.a.model.BbslistDto">
+	INSERT INTO BBS(SEQ, ID, REF, STEP, DEPTH, TITLE, CONTENT, WDATE, PARENT, DEL, READCOUNT) 
+	VALUES(SEQ_BBS.NEXTVAL, #{id}, (SELECT NVL(MAX(REF), 0)+1 FROM BBS), 0, 0, #{title}, #{content}, SYSDATE, 0, 0, 0)
+</insert>
+
+<select id="BbsDetail" parameterType="java.lang.Integer" resultType="bit.com.a.model.BbslistDto">
+	SELECT SEQ, ID, REF, STEP, DEPTH, TITLE, CONTENT, WDATE, PARENT, DEL, READCOUNT
+	FROM BBS
+	WHERE SEQ=#{seq}
+</select>
+
+<update id="BbsUpdate" parameterType="bit.com.a.model.BbslistDto">
+	UPDATE BBS
+	SET TITLE=#{title}, CONTENT=#{content}
+	WHERE SEQ=#{seq}
+</update>
+
+<update id="BbsDelete" parameterType="java.lang.Integer">
+	UPDATE BBS
+	SET DEL = 1
+	WHERE SEQ=#{seq}
+</update>
+
+<update id="BbsReadCount" parameterType="java.lang.Integer">
+	UPDATE BBS
+	SET READCOUNT = READCOUNT + 1
+	WHERE SEQ=#{seq}
+</update>
+
+<update id="aupdate" parameterType="bit.com.a.model.BbslistDto">
+	UPDATE BBS
+	SET STEP=STEP + 1
+	WHERE REF=(SELECT REF FROM BBS WHERE SEQ=#{seq})
+	AND STEP <![CDATA[>]]> (SELECT STEP FROM BBS WHERE SEQ=#{seq})
+</update>
+
+<insert id="ainsert" parameterType="bit.com.a.model.BbslistDto">
+	INSERT INTO BBS
+	(SEQ, ID, REF, STEP, DEPTH, TITLE, CONTENT, WDATE, PARENT, DEL, READCOUNT)
+	VALUES(SEQ_BBS.NEXTVAL, #{id}, 
+	(SELECT REF FROM BBS WHERE SEQ=#{seq}),
+	(SELECT STEP FROM BBS WHERE SEQ=#{seq}) + 1,
+	(SELECT DEPTH FROM BBS WHERE SEQ=#{seq}) + 1,
+	#{title}, #{content}, SYSDATE, #{seq}, 0, 0)
+</insert>
+
+</mapper>

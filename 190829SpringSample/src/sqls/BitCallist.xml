@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="Calendar">
+	
+<select id="getCalendarList"
+	parameterType="bit.com.a.model.CalendarDto"
+	resultType="bit.com.a.model.CalendarDto">
+	
+	SELECT SEQ, ID, TITLE, CONTENT, RDATE, WDATE
+	FROM (SELECT ROW_NUMBER() OVER(PARTITION BY SUBSTR(RDATE, 1, 8) ORDER BY RDATE ASC) RN,
+			 SEQ, ID, TITLE, CONTENT, RDATE, WDATE
+		  FROM CALENDAR
+		  WHERE ID=#{id} AND SUBSTR(RDATE, 1, 6)=#{rdate})
+	WHERE RN BETWEEN 1 AND 5
+</select>	
+
+<insert id="writeCalendar" parameterType="bit.com.a.model.CalendarDto">
+	INSERT INTO CALENDAR(SEQ, ID, TITLE, CONTENT, RDATE, WDATE)
+	VALUES(SEQ_CAL.NEXTVAL, #{id}, #{title}, #{content}, #{rdate}, SYSDATE)
+</insert>
+
+<select id="getDay" 
+	parameterType="bit.com.a.model.CalendarDto"
+	resultType="bit.com.a.model.CalendarDto">	
+	SELECT SEQ, ID, TITLE, CONTENT, RDATE, WDATE
+	FROM CALENDAR
+	WHERE SEQ=#{seq}	
+</select>
+
+<delete id="DayDelete" parameterType="java.lang.Integer">
+	DELETE FROM CALENDAR
+	WHERE SEQ=#{seq}
+</delete>
+
+<update id="DayUpdate" parameterType="bit.com.a.model.CalendarDto">
+	UPDATE CALENDAR
+	SET TITLE=#{title}, CONTENT=#{content}
+	WHERE SEQ=#{seq}
+</update>
+
+<select id="getcalendarDay" parameterType="bit.com.a.model.CalendarDto"
+resultType="bit.com.a.model.CalendarDto">
+
+	SELECT SEQ, ID, TITLE, CONTENT, RDATE, WDATE
+	FROM (SELECT ROW_NUMBER()
+	OVER(PARTITION BY SUBSTR(RDATE, 1, 8) ORDER BY RDATE ASC ) AS RNUM,
+	SEQ, ID, TITLE, CONTENT, RDATE, WDATE
+	FROM CALENDAR
+	WHERE ID=#{id} AND SUBSTR(RDATE, 1, 8)=#{rdate})		
+	WHERE RNUM BETWEEN 1 AND 5
+
+</select>
+
+</mapper>  
+
+
+
+
