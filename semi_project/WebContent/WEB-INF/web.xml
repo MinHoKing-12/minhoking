@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+  <display-name>semi_project</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <servlet>
+  	<servlet-name>memcontrol</servlet-name>
+  	<servlet-class>control.MemberControl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>memcontrol</servlet-name>
+  	<url-pattern>/memcontrol</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>mypagecontrol</servlet-name>
+  	<servlet-class>control.MypageControl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>mypagecontrol</servlet-name>
+  	<url-pattern>/mypagecontrol</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+	<servlet-name>sellcontrol</servlet-name>
+	<servlet-class>control.SellControl</servlet-class>
+  </servlet>
+	
+  <servlet-mapping>
+	<servlet-name>sellcontrol</servlet-name>
+	<url-pattern>/sellcontrol</url-pattern>
+  </servlet-mapping>
+	
+  <servlet>
+	<servlet-name>filedown</servlet-name>
+	<servlet-class>pds.FileDownLoader</servlet-class>
+  </servlet>
+	
+  <servlet-mapping>
+	<servlet-name>filedown</servlet-name>
+	<url-pattern>/filedown</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>free_bbsControling</servlet-name>
+    <servlet-class>control.FreebbsControl</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>free_bbsControling</servlet-name>
+    <url-pattern>/freeControl</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>calendarcontrol</servlet-name>
+  	<servlet-class>control.CalendarControl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>calendarcontrol</servlet-name>
+  	<url-pattern>/calendarcontrol</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+	<servlet-name>VoteControl</servlet-name>
+	<servlet-class>control.VoteControl</servlet-class>
+  </servlet>
+	
+  <servlet-mapping>
+	<servlet-name>VoteControl</servlet-name>
+	<url-pattern>/VoteControl</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
+  	<servlet-name>admincontrol</servlet-name>
+  	<servlet-class>control.AdminControl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+  	<servlet-name>admincontrol</servlet-name>
+  	<url-pattern>/admincontrol</url-pattern>
+  </servlet-mapping>
+  
+  
+</web-app>

@@ -1,0 +1,61 @@
+@charset "UTF-8";
+/* CSS Document */
+body {
+	font-family: "Apple SD Gothic Neo", "Malgun Gothic", 'Nanum Gothic', sans-serif;
+    min-height: calc(100% - 77px);
+    position: relative;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: left;
+    line-height: 1.5;
+    margin : 20px 10px;
+}
+table th { 
+    /* width: 150px; */
+    padding: 10px;
+    font-weight: bold;
+    vertical-align: top;
+    border: 1px solid #ccc;
+    text-align: center;    
+    background-color: white;
+    color: #820024; 
+}
+table td {
+    /* width: 350px; */
+    padding: 10px;
+    vertical-align: top;
+    border: 1px solid #ccc;
+    background-color: white; 
+}
+
+h3{
+	font-size: 32px;
+ 	font-weight: 600;
+	letter-spacing: -0.6px;
+ 	color: #212529;
+ 	text-align: center;
+   	margin-bottom: 40px;
+}
+.empty{
+	width: 130px;
+   	border-top: 2px solid #FF8A3D;
+   	margin: 0 auto;
+   	margin-bottom: 50px;
+}
+.cards-wrap {
+	width: 980px;
+	margin: 0 auto;
+	text-align : center;
+}
+.card-top {
+    position: relative;
+  	text-align: left;
+   	display: inline-block;
+   	border-radius: 8px;
+   	border: 1px solid #e9ecef;
+   	width: calc(25% - 34px);
+   	margin-right: 34px;
+   	margin-bottom: 40px;
+}
