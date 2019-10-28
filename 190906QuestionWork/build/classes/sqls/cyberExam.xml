@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="Exam">
+
+<select id="getExamlist" resultType="cyber.exam.a.model.ExamDto">
+	SELECT SEQ, ID, SUBJECT, TITLE, QUESTIONCOUNT, TOTALCOUNT, LIMIT_TIME, STARTDATE, FINISHDATE, REGDATE
+	FROM EXAM_INFO
+	ORDER BY REGDATE DESC
+</select>
+
+<select id="isFinish" parameterType="cyber.exam.a.model.ExamReplyDto" resultType="java.lang.Integer">
+SELECT NVL(COUNT(*), 0)
+FROM EXAM_REPLY
+WHERE EXAM_SEQ=#{exam_seq} AND ID=#{id}
+</select>
+
+<!-- 문제만들기 -->
+<insert id="makeExam" parameterType="cyber.exam.a.model.ExamDto">
+INSERT INTO EXAM_INFO (SEQ, ID, SUBJECT, TITLE, QUESTIONCOUNT, TOTALCOUNT, LIMIT_TIME, STARTDATE, FINISHDATE, REGDATE)
+VALUES(EXAM_INFO_SEQ.NEXTVAL, #{id}, #{subject}, #{title}, #{questioncount}, 0, #{limit_time}, #{startdate}, #{finishdate}, SYSDATE)
+</insert>
+<insert id="makeExamSub" parameterType="cyber.exam.a.model.ExamQuestionDto">
+INSERT INTO EXAM_QUESTION(SEQ, EXAM_SEQ, SCORE, QUESTION, QUESTION_SUB, FILENAME, ORIGINAL_FILENAME, CORRECT_ANSWER, ANSWER1, ANSWER2, ANSWER3, ANSWER4)
+VALUES(EXAM_QUESTION_SEQ.NEXTVAL, (SELECT NVL(MAX(SEQ), 0) FROM EXAM_INFO), #{score}, #{question}, #{question_sub}, #{filename}, #{original_filename}, 
+#{correct_answer}, #{answer1}, #{answer2}, #{answer3}, #{answer4})
+</insert>
+
+<select id="getExam" parameterType="java.lang.Integer" resultType="cyber.exam.a.model.ExamDto">
+SELECT SEQ, ID, SUBJECT, TITLE, QUESTIONCOUNT, TOTALCOUNT, LIMIT_TIME, STARTDATE, FINISHDATE, REGDATE
+FROM EXAM_INFO
+WHERE SEQ=#{seq}
+</select>
+
+<select id="getExamSubList" parameterType="java.lang.Integer" resultType="cyber.exam.a.model.ExamQuestionDto">
+SELECT SEQ, EXAM_SEQ, SCORE, QUESTION, QUESTION_SUB, FILENAME, ORIGINAL_FILENAME, CORRECT_ANSWER, ANSWER1, ANSWER2, ANSWER3, ANSWER4
+FROM EXAM_QUESTION
+WHERE EXAM_SEQ=#{seq}
+ORDER BY SEQ
+</select>
+ 
+<!-- 시험 제출자를 등록 -->
+<insert id="ExamSubmit" parameterType="cyber.exam.a.model.ExamReplyDto">
+INSERT INTO EXAM_REPLY(SEQ, EXAM_SEQ, QUESTION_SEQ, ID, REPLY, SCORE, REGDATE)
+VALUES(EXAM_REPLY_SEQ.NEXTVAL, #{exam_seq}, #{question_seq}, #{id}, #{reply}, #{score}, SYSDATE)
+</insert>
+
+<!-- 어떤 시험을 봤는지 카운트 -->
+<update id="ExamCount" parameterType="cyber.exam.a.model.ExamReplyDto">
+UPDATE EXAM_INFO
+SET TOTALCOUNT=TOTALCOUNT+1
+WHERE SEQ=#{exam_seq}
+</update>
+
+<!-- 제출한 시험 -->
+<select id="getExamReply" parameterType="cyber.exam.a.model.ExamReplyDto" resultType="cyber.exam.a.model.ExamReplyDto">
+SELECT SEQ, EXAM_SEQ, QUESTION_SEQ, ID, REPLY, SCORE, REGDATE
+FROM EXAM_REPLY
+WHERE exam_seq=#{exam_seq} AND ID=#{id}
+ORDER BY QUESTION_SEQ
+</select>
+
+<!-- 시험 점수 -->
+<select id="ExamSocre" parameterType="cyber.exam.a.model.ExamReplyDto" resultType="java.lang.Integer">
+SELECT NVL(SUM(SCORE), 0)
+FROM EXAM_REPLY
+WHERE exam_seq=#{exam_seq} AND ID=#{id}
+</select>
+
+<!-- 시험지 제출한 사람 score -->
+<select id="getExamTotalScore" parameterType="java.lang.Integer" resultType="cyber.exam.a.model.ExamReplyDto">
+SELECT NVL(SUM(SCORE), 0) AS SCORE, ID
+FROM EXAM_REPLY
+WHERE exam_seq=#{seq}
+GROUP BY ID
+</select>
+
+ </mapper>

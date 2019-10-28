@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="Member">
+
+<insert id="addMember" parameterType="cyber.exam.a.model.CyberMemberDto">
+INSERT INTO EXAM_MEMBER(ID, PW, NAME, AUTH)
+VALUES(#{id}, #{pw}, #{name}, 3)
+</insert>
+
+<select id="CheckId" parameterType="java.lang.String" resultType="java.lang.String">
+SELECT ID
+FROM EXAM_MEMBER
+WHERE ID=#{id}
+</select>
+
+<select id="LoginCheck" parameterType="cyber.exam.a.model.CyberMemberDto"
+resultType="cyber.exam.a.model.CyberMemberDto">
+SELECT ID, PW, NAME, AUTH
+FROM EXAM_MEMBER
+WHERE ID=#{id} AND PW=#{pw}
+</select>
+</mapper>  
